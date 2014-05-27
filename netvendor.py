@@ -51,14 +51,14 @@ class Vendor:
         self.tipThreshold = uSats
 
     def set_last_tip_id(self, tipID):
-        self.lastTipID = tipID
+        self.last_tip_id = tipID
 
     def get_last_tip_id(self):
-        return self.lastTipID
+        return self.last_tip_id
 
     def get_new_vends(self, callback=None):
         if callback is None:
-            return self.getNewVendsWork(None)
+            return self.get_new_vends_work(None)
         else:
             if not callable(callback):
                 raise TypeError
@@ -66,7 +66,7 @@ class Vendor:
 
     def vend_out(self, data, address=None, uSats=0, callback=None):
         if callback is None:
-            return self.vendOutWork(data, address, uSats, None)
+            return self.vend_out_work(data, address, uSats, None)
         else:
             if not callable(callback):
                 raise TypeError
@@ -86,7 +86,7 @@ class Vendor:
                 "ON tips.post_id = posts.post_id " \
                 "WHERE " \
                         "tips.to_address = '" + self.agent.get_address() + "' " \
-                    "AND tips.tip_id > " + str(self.lastTipID) + " " \
+                    "AND tips.tip_id > " + str(self.last_tip_id) + " " \
                     "AND tips.value > " + str(self.tipThreshold) + " " \
                 "ORDER BY tip_id ASC"
 
@@ -100,7 +100,7 @@ class Vendor:
         for row in rows:
             tip_id, from_address, tip_value, post_id, tip_ts, post_address, data, post_ts = row
 
-            self.lastTipID = tip_id
+            self.last_tip_id = tip_id
 
             vends.append(Vend(int(tip_id), str(from_address), self.agent.get_address(), int(tip_value), tip_ts, int(post_id), str(post_address), str(data), post_ts))
 
